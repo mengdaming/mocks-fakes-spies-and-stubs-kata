@@ -24,7 +24,7 @@ class RateServiceTest_Spy {
         likedNotifier = Mockito.mock(LikedNotifier.class);
         rateService = new RateService(repository, filmService, likedNotifier);
     }
-
+    
     @Test
     void shouldSaveInTheRepository_usingAnSpy() {
         final Rate rate = Rate.of("aTitle", 4, UserIdDummy.randomUserId());
@@ -33,6 +33,7 @@ class RateServiceTest_Spy {
         rateService.save(rate);
 
         // Verify expectations
+        Mockito.verify(repository).save(rate.id, rate);
     }
 
     @Test
@@ -41,10 +42,12 @@ class RateServiceTest_Spy {
         final List<Rate> ratesForFilm = randomListOfRatesOfSizeForFilm(RateService.RATES_PER_FILM_FOR_NOTIFICATION, title);
 
         // Setup
-
+        Mockito.doReturn(ratesForFilm).when(repository).ratesForFilm(title);
+    
         // Exercise
         rateService.save(randomRate().withTitle(title).build());
-
+    
         // Verify it has been called
+        Mockito.verify(likedNotifier, Mockito.times(1)).notifyForFilm(title);
     }
 }

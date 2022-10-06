@@ -30,10 +30,12 @@ public class RateService {
     }
 
     public Optional<Rate> findById(RateId id) {
+//        return Optional.empty();
         return repository.findById(id);
     }
 
     public List<Rate> findByUser(UserId userId) {
+//        return null;
         return repository.all().stream().filter(rate -> rate.by(userId)).collect(Collectors.toList());
     }
 

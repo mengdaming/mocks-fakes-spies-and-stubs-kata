@@ -4,6 +4,9 @@ import kata.domain.film.Film;
 import kata.domain.film.FilmService;
 import kata.domain.user.UserId;
 import kata.domain.user.UserIdDummy;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -27,19 +30,22 @@ class RateServiceTest_Mock {
         likedNotifier = Mockito.mock(LikedNotifier.class);
         rateService = new RateService(repository, filmService, likedNotifier);
     }
-
+    
     @Test
     void shouldReceiveFromRepository() {
         final Rate rate = Rate.of("aTitle", 4, UserIdDummy.randomUserId());
 
         // Setup Expectations
-
+        Mockito.doReturn(Optional.of(rate)).when(repository).findById(rate.id);
+    
         // Exercise
         final Optional<Rate> ratingFromRepo = rateService.findById(rate.id);
-
+    
         // Verify expectations
-
+        Mockito.verify(repository).findById(rate.id);
+    
         // Verify State
+        Assertions.assertEquals(rate, ratingFromRepo.get());
     }
 
     @Test
@@ -53,13 +59,18 @@ class RateServiceTest_Mock {
         allRates.add(rateTwoByUser);
 
         // Setup Expectations
+        Mockito.doReturn(allRates).when(repository).all();
 
         // Exercise
         final List<Rate> ratedByUser = rateService.findByUser(userId);
 
         // Verify expectations
+        Mockito.verify(repository).all();
 
         // Verify State
+        assertEquals(2, ratedByUser.size());
+        assertTrue(ratedByUser.contains(rateOneByUser));
+        assertTrue(ratedByUser.contains(rateTwoByUser));
     }
 
     @Test
@@ -90,14 +101,20 @@ class RateServiceTest_Mock {
         allRates.add(rateOfTheLionKingByUser);
 
         // Setup Expectations
-
+        Mockito.doReturn(allRates).when(repository).all();
+        Mockito.doReturn(Optional.of(theLionKingMovieAsOldFilm)).when(filmService).findById(theLionKingTitle);
+        Mockito.doReturn(Optional.of(frozenMovieAsNewerFilm)).when(filmService).findById(frozenTitle);
+    
         // Exercise
         final List<Rate> ratesByUserOfFilmsMadeAtYear2000OrMoreRecent = rateService
                 .ratedByUserAtYearOrMoreRecent(userId, productionYear);
 
         // Verify expectations
+        Mockito.verify(repository).all();
 
         // Verify State
+        assertEquals(1, ratesByUserOfFilmsMadeAtYear2000OrMoreRecent.size());
+        assertTrue(ratesByUserOfFilmsMadeAtYear2000OrMoreRecent.contains(rateOfFrozenByUser));
     }
 
     @Test
@@ -107,10 +124,14 @@ class RateServiceTest_Mock {
         final List<Rate> ratesForFilm = randomListOfRatesOfSizeForFilm(RateService.RATES_PER_FILM_FOR_NOTIFICATION, title);
 
         // Setup Expectations
+        Mockito.doReturn(ratesForFilm).when(repository).ratesForFilm(title);
 
         // Exercise
         rateService.save(rate);
+    
+        Mockito.verify(repository).ratesForFilm(title);
 
         // Verify expectations
+        Mockito.verify(likedNotifier, Mockito.times(1)).notifyForFilm(title);
     }
 }

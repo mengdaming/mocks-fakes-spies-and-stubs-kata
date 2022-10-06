@@ -4,6 +4,9 @@ import kata.domain.film.Film;
 import kata.domain.film.FilmService;
 import kata.domain.user.UserId;
 import kata.domain.user.UserIdDummy;
+import org.junit.jupiter.api.Assertions;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -14,6 +17,7 @@ import java.util.Optional;
 import static kata.domain.film.FilmDummy.randomFilm;
 import static kata.domain.rate.RateDummy.randomListOfRatesOfSize;
 import static kata.domain.rate.RateDummy.randomRate;
+import sun.jvm.hotspot.utilities.Assert;
 
 class RateServiceTest_Stub {
     private RateRepository repository;
@@ -34,11 +38,13 @@ class RateServiceTest_Stub {
         final Rate rate = Rate.of("aTitle", 4, UserIdDummy.randomUserId());
 
         // Setup
+        Mockito.doReturn(Optional.of(rate)).when(repository).findById(rate.id);
 
         // Exercise
         final Optional<Rate> ratingFromRepo = rateService.findById(rate.id);
 
         // Verify State
+        Assertions.assertEquals(rate, ratingFromRepo.get());
     }
 
     @Test
@@ -52,11 +58,15 @@ class RateServiceTest_Stub {
         allRates.add(rateTwoByUser);
 
         // Setup
+        Mockito.doReturn(allRates).when(repository).all();
 
         // Exercise
         final List<Rate> ratedByUser = rateService.findByUser(userId);
 
         // Verify State
+        assertEquals(2, ratedByUser.size());
+        assertTrue(ratedByUser.contains(rateOneByUser));
+        assertTrue(ratedByUser.contains(rateTwoByUser));
     }
 
     @Test
@@ -87,11 +97,16 @@ class RateServiceTest_Stub {
         allRates.add(rateOfTheLionKingByUser);
 
         // Setup
+        Mockito.doReturn(allRates).when(repository).all();
+        Mockito.doReturn(Optional.of(theLionKingMovieAsOldFilm)).when(filmService).findById(theLionKingTitle);
+        Mockito.doReturn(Optional.of(frozenMovieAsNewerFilm)).when(filmService).findById(frozenTitle);
 
         // Exercise
         final List<Rate> ratesByUserOfFilmsMadeAtYear2000OrMoreRecent = rateService
                 .ratedByUserAtYearOrMoreRecent(userId, productionYear);
 
         // Verify State
+        assertEquals(1, ratesByUserOfFilmsMadeAtYear2000OrMoreRecent.size());
+        assertTrue(ratesByUserOfFilmsMadeAtYear2000OrMoreRecent.contains(rateOfFrozenByUser));
     }
 }
