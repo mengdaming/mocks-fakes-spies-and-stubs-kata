@@ -22,7 +22,7 @@ public class RateService {
     }
 
     public void save(Rate rate) {
-        repository.save(rate.id, rate);
+        repository.save(rate);
 
         if (repository.ratesForFilm(rate.title).size() == RATES_PER_FILM_FOR_NOTIFICATION) {
             likedNotifier.notifyForFilm(rate.title);
@@ -36,7 +36,7 @@ public class RateService {
 
     public List<Rate> findByUser(UserId userId) {
 //        return null;
-        return repository.all().stream().filter(rate -> rate.by(userId)).collect(Collectors.toList());
+        return repository.ratesForUser(userId);
     }
 
     public List<Rate> ratedByUserAtYearOrMoreRecent(UserId userId, int productionYear) {

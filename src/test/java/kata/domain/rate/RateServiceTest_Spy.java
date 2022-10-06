@@ -33,7 +33,7 @@ class RateServiceTest_Spy {
         rateService.save(rate);
 
         // Verify expectations
-        Mockito.verify(repository).save(rate.id, rate);
+        Mockito.verify(repository).save(rate);
     }
 
     @Test

@@ -3,6 +3,7 @@ package kata.support;
 import kata.domain.rate.Rate;
 import kata.domain.rate.RateId;
 import kata.domain.rate.RateRepository;
+import kata.domain.user.UserId;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -28,5 +29,15 @@ public class RateRepositoryInMemory implements RateRepository {
     @Override
     public List<Rate> ratesForFilm(String title) {
         return all().stream().filter(rate -> rate.title.equals(title)).collect(Collectors.toList());
+    }
+    
+    @Override
+    public List<Rate> ratesForUser(UserId id) {
+        return all().stream().filter(rate -> rate.userId.equals(id)).collect(Collectors.toList());
+    }
+    
+    @Override
+    public void save(Rate rate) {
+        save(rate.id, rate);
     }
 }
