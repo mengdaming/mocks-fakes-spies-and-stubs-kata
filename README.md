@@ -1,47 +1,70 @@
 # Mocks, Fakes, Spies and Stubs Kata
 
-## Requirements
+> This is an adaptation of the original kata available at
+> [github.com/aleixmorgadas/mocks-fakes-spies-and-stubs-kata](https://github.com/aleixmorgadas/mocks-fakes-spies-and-stubs-kata)
 
-- Java 8
-- Gradle
-- An IDE, I would suggest IntelliJ. For IntelliJ users, check that you are using the latest version
+## Recommended Reading
+
+- Blog post [The Little Mocker](https://blog.cleancoder.com/uncle-bob/2014/05/14/TheLittleMocker.html) by Robert C. Martin a.k.a. Uncle Bob
 
 ## Setup Environment
 
 1. Clone the repository
+    ```shell
+    git clone https://stash.murex.com/scm/xps/mocks-fakes-spies-and-stubs-kata.git
+   ```
+2. Check that all tests are green
+    ```shell
+    ./gradlew test
+    ```
 
-    `git clone git@github.com:aleixmp/mocks-fakes-spies-and-stubs-kata.git`
-2. Check all tests are green
-    `./gradlew test` 
-
-## How is the kata structured ?
+## How is the kata structured?
 
 - `kata.domain.film`: Test-Doubles examples made with Mockito and hand-made examples.
 - `kata.domain.user`: Support domain to represent the UserId
-- `kata.domain.rate`: Actual kata.
+- `kata.domain.rate`: Actual kata
 - `kata.support`: InMemoryRepositories
 
-## How to do the Kata?
+## Running the kata
 
-1. Check the tests at `kata.domain.rate`.
- 
-    You will see the `RateServiceTest_<Test Double Type>`. Implement each Test following the named pattern. 
-    :info: Remember that using two different Test Double types in the same test is allowed.  
-    
-2. After you implemented all tests using different Test Double types, change the implementation of `RateService`. 
-The goal is to **break the code and see which tests become red and which keep green**. So, you notice which Test Doubles are safer when changing the implementation.
+### 1 - Implement `RateService` tests using different kinds of test doubles
 
-### FAQ
+Check the tests in [kata.domain.rate](./src/test/java/kata/domain/rate).
 
-- Should I expect miss behaviour in the code?
+You will see [RateServiceTest_Fake](./src/test/java/kata/domain/rate/RateServiceTest_Fake.java)
+and [RateServiceTest_Mock_Stub_Spy](./src/test/java/kata/domain/rate/RateServiceTest_Mock_Stub_Spy.java).
+Implement each Test following the named pattern. 
 
-No, but maybe there are bugs in the code. Feel free to open an issue or talk with me for clarification.
+__Info:__ Remember that using two different Test Double types in the same test is allowed.  
 
-- Should I only use **one** Test-Double type in each class?
+### 2 - Alter the behaviour of `RateService` and observe impacts on the tests
 
-No, it is expected that you have to use a combination of two or more test-double types to achieve the desired behaviour.
+For each of the following cases, **observe which tests turn red and which remain green**.
 
-## Supportive docs
+1. Introduce some bugs
+2. Refactor by adding RateRepository.save(rate)
+3. Refactor by adding RateRepository.findByUser(userId) for optimisation
+4. Decreased the notification threshold by one
+
+### 3 - Replace `FilmService` mock with a fake
+
+In `RateService` test setups, use `FilmRepositoryInMemory` instead of mocking `FilmService`.
+What do you observe?
+
+### 4 - Test Doubles Pros, Cons and Fixes
+
+Fill a table listing the pros, cons and fixes for each type of Test Double
+
+| Test Double Family  | Pros | Cons | Fixes |
+|---------------------|------|------|-------|
+| Mocks, Spies, Stubs |      |      |       |
+| Fakes               |      |      |       |
+
+## Session Quick Retrospective
+
+You can fill it from [here](QuickRetrospective.md)
+
+## Support Docs
 
 - [Business Definitions](docs/BusinessDefinitions.md)
 - [Kata Slides](https://docs.google.com/presentation/d/1RTIjilK8zIiKfilBqD8x9UavBJFn089ORiLlBBgjidg)
