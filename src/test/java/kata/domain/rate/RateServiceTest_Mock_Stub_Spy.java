@@ -32,7 +32,7 @@ class RateServiceTest_Mock_Stub_Spy {
     }
 
     @Test
-    void shouldSaveInTheRepository_usingASpy() {
+    void shouldSaveInTheRepository_usingASpy_withMockito() {
         final Rate rate = Rate.of("aTitle", 4, UserIdDummy.randomUserId());
 
         // Exercise
@@ -42,7 +42,7 @@ class RateServiceTest_Mock_Stub_Spy {
     }
 
     @Test
-    void shouldReceiveFromRepository_usingAStub() {
+    void shouldReceiveFromRepository_usingAStub_withMockito() {
         final Rate rate = Rate.of("aTitle", 4, UserIdDummy.randomUserId());
 
         // Setup
@@ -54,21 +54,7 @@ class RateServiceTest_Mock_Stub_Spy {
     }
 
     @Test
-    void shouldReceiveFromRepository_usingAMock() {
-        final Rate rate = Rate.of("aTitle", 4, UserIdDummy.randomUserId());
-
-        // Setup Expectations
-
-        // Exercise
-        final Optional<Rate> ratingFromRepo = rateService.findById(rate.id);
-
-        // Verify expectations
-
-        // Verify State
-    }
-
-    @Test
-    void shouldReturnRatesMadeByAUser_usingAStub() {
+    void shouldReturnRatesMadeByAUser_usingAStub_withMockito() {
         final UserId userId = UserId.of("aUser");
         final Rate rateOneByUser = randomRate().withUserId(userId).build();
         final Rate rateTwoByUser = randomRate().withUserId(userId).build();
@@ -86,27 +72,7 @@ class RateServiceTest_Mock_Stub_Spy {
     }
 
     @Test
-    void shouldReturnRatesMadeByAUser_usingAMock() {
-        final UserId userId = UserId.of("aUser");
-        final Rate rateOneByUser = randomRate().withUserId(userId).build();
-        final Rate rateTwoByUser = randomRate().withUserId(userId).build();
-
-        final List<Rate> allRates = randomListOfRatesOfSize(10);
-        allRates.add(rateOneByUser);
-        allRates.add(rateTwoByUser);
-
-        // Setup Expectations
-
-        // Exercise
-        final List<Rate> ratedByUser = rateService.findByUser(userId);
-
-        // Verify expectations
-
-        // Verify State
-    }
-
-    @Test
-    void shouldReturnTheListOfRatesByAUserForAFilmThatWasProducedAtYearOrMoreRecent_usingAStub() {
+    void shouldReturnTheListOfRatesByAUserForAFilmThatWasProducedAtYearOrMoreRecent_usingAStub_withMockito() {
         final UserId userId = UserId.of("aUser");
         final int productionYear = 2000;
 
@@ -142,45 +108,7 @@ class RateServiceTest_Mock_Stub_Spy {
     }
 
     @Test
-    void shouldReturnTheListOfRatesByAUserForAFilmThatWasProducedAtYearOrMoreRecent_usingAMock() {
-        final UserId userId = UserId.of("aUser");
-        final int productionYear = 2000;
-
-        final String theLionKingTitle = "The Lion King";
-        final Film theLionKingMovieAsOldFilm = randomFilm()
-                .withTitle(theLionKingTitle)
-                .withReleaseDate(1994)
-                .build();
-        final String frozenTitle = "Frozen";
-        final Film frozenMovieAsNewerFilm = randomFilm()
-                .withTitle(frozenTitle)
-                .withReleaseDate(2013)
-                .build();
-        final Rate rateOfFrozenByUser = randomRate()
-                .withTitle(frozenTitle)
-                .withUserId(userId)
-                .build();
-        final Rate rateOfTheLionKingByUser = randomRate()
-                .withTitle(theLionKingTitle)
-                .withUserId(userId)
-                .build();
-        final List<Rate> allRates = randomListOfRatesOfSize(10);
-        allRates.add(rateOfFrozenByUser);
-        allRates.add(rateOfTheLionKingByUser);
-
-        // Setup Expectations
-
-        // Exercise
-        final List<Rate> ratesByUserOfFilmsMadeAtYear2000OrMoreRecent = rateService
-                .ratedByUserAtYearOrMoreRecent(userId, productionYear);
-
-        // Verify expectations
-
-        // Verify State
-    }
-
-    @Test
-    void whenAFilmIsRatedMoreThan10Times_ItShouldNotifyOnceThatItHasBeenLikedBy10DifferentUsers_usingASpy() {
+    void whenAFilmIsRatedMoreThan10Times_ItShouldNotifyOnceThatItHasBeenLikedBy10DifferentUsers_usingASpy_withMockito() {
         final String title = "aTitle";
         final List<Rate> ratesForFilm = randomListOfRatesOfSizeForFilm(RateService.RATES_PER_FILM_FOR_NOTIFICATION, title);
 
@@ -193,10 +121,15 @@ class RateServiceTest_Mock_Stub_Spy {
     }
 
     @Test
-    void whenAFilmIsRatedMoreThan10Times_ItShouldNotifyOnceThatItHasBeenLikedBy10DifferentUsers_usingAMock() {
+    void whenAFilmIsRatedMoreThan10Times_ItShouldNotifyOnceThatItHasBeenLikedBy10DifferentUsers_usingAMock_withoutMockito() {
+
+        // IMPORTANT: This is a Mockito-free zone!
+        // You are expected to write your own mock for this test case
+
         final String title = "aTitle";
         final Rate rate = randomRate().withTitle(title).build();
         final List<Rate> ratesForFilm = randomListOfRatesOfSizeForFilm(RateService.RATES_PER_FILM_FOR_NOTIFICATION, title);
+
 
         // Setup Expectations
 
